@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -34,17 +35,19 @@ export default function Register() {
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
     if (!pass || !confirmPass) {
-      setPasswordError("");
+      setPasswordError("Password and confirm password are required");
       return false;
     }
 
     if (!specialCharRegex.test(pass)) {
-      setPasswordError("Password must contain at least one special character");
+      setPasswordError(
+        "Password must contain at least one special character"
+      );
       return false;
     }
 
     if (pass !== confirmPass) {
-      setPasswordError("Please enter a correct password");
+      setPasswordError("Passwords do not match");
       return false;
     }
 
@@ -72,17 +75,35 @@ export default function Register() {
     validatePasswords(password, value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePasswords(password, confirmPassword);
 
-    if (!isEmailValid || !isPasswordValid) {
-      return;
-    }
+    if (!isEmailValid || !isPasswordValid) return;
 
-    alert("Registered successfully!");
+    try {
+      // 🔴 SEND DATA TO BACKEND
+      const res = await fetch("http://localhost:5001/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Registration failed");
+        return;
+      }
+
+      alert("Registered successfully!");
+      navigate("/login"); // Redirect to login
+    } catch (err) {
+      alert("Server not reachable");
+      console.error(err);
+    }
   };
 
   return (
@@ -150,27 +171,18 @@ export default function Register() {
             />
             <button
               type="button"
-              onClick={() =>
-                setShowConfirmPassword(!showConfirmPassword)
-              }
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
             >
-              {showConfirmPassword ? (
-                <EyeOff size={20} />
-              ) : (
-                <Eye size={20} />
-              )}
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
 
           {/* Password Error */}
           {passwordError && (
-            <p className="text-sm text-red-600 -mt-2">
-              {passwordError}
-            </p>
+            <p className="text-sm text-red-600 -mt-2">{passwordError}</p>
           )}
 
-          {/* Button UNCHANGED */}
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg"

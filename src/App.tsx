@@ -14,6 +14,8 @@ import Services from './pages/Services';
 import Login from "./authenticate/Login";
 import Register from './authenticate/Register';
 import CartPage from './pages/CartPage';
+import Admin from "./authenticate/Admin";
+
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
 
   <Route path="/login" element={<Login />} />
   <Route path="/register" element={<Register />} />
+  <Route path="/admin" element={<Admin />} />
 </Routes>
 
       </main>

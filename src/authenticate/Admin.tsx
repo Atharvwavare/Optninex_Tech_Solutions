@@ -1,94 +1,103 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-export default function Admin() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+interface Product {
+  _id: string;
+  title: string;
+  price: number;
+}
 
+const API_URL = "http://localhost:5001/api/products";
+
+const Admin = () => {
+  const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState<number | "">("");
 
-    try {
-      const res = await fetch("http://localhost:5000/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data: {
-        token?: string;
-        admin?: { email: string };
-        message?: string;
-      } = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Admin login failed");
-        setLoading(false);
-        return;
-      }
-
-      localStorage.setItem("adminToken", data.token || "");
-      localStorage.setItem("adminEmail", data.admin?.email || "");
-
-      navigate("/admin/dashboard");
-    } catch (err) {
-      setError("Server error. Try again later.");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!user || user.role !== "admin") {
+      navigate("/login");
     }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    if (!token) return;
+    const res = await fetch(API_URL, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setProducts(data);
+  };
+
+  const addProduct = async () => {
+    if (!title || price === "" || !token) return;
+    await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, price }),
+    });
+    setTitle("");
+    setPrice("");
+    fetchProducts();
+  };
+
+  const deleteProduct = async (id: string) => {
+    if (!token) return;
+    await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    fetchProducts();
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2b0057] to-[#2f1fff] px-4">
-      <div className="bg-white p-8 rounded-1xl shadow-xl w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Admin Login
-        </h2>
+    <div style={{ padding: "2rem" }}>
+      <h1>Admin Dashboard</h1>
 
-        {error && (
-          <div className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm text-center">
-            {error}
+      <section style={{ marginBottom: "2rem" }}>
+        <h2>Add Product</h2>
+        <input
+          type="text"
+          placeholder="Product title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+        />
+        <button onClick={addProduct}>Add</button>
+      </section>
+
+      <section>
+        <h2>Products</h2>
+        {products.length === 0 && <p>No products</p>}
+        {products.map((p) => (
+          <div key={p._id} style={{ display: "flex", gap: "1rem" }}>
+            <span>
+              {p.title} — ${p.price}
+            </span>
+            <button onClick={() => deleteProduct(p._id)}>Delete</button>
           </div>
-        )}
-
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Admin Email"
-            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Admin Password"
-            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg transition ${
-              loading ? "opacity-60 cursor-not-allowed" : ""
-            }`}
-          >
-            {loading ? "Logging in..." : "Login as Admin"}
-          </button>
-        </form>
-      </div>
+        ))}
+      </section>
     </div>
   );
-}
+};
+
+export default Admin;
