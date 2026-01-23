@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// ✅ IMPORT IMAGES FROM SRC
-import edu1 from "../images/bg1.jpg";
-import edu2 from "../images/bg2.jpg";
-import edu3 from "../images/img2.jpg";
-import edu4 from "../images/img3.jpg";
+// IMPORT IMAGES
+import edu1 from "../images/cara_img1.jpeg";
+import edu2 from "../images/cara_img2.jpg";
+import edu3 from "../images/cara_img3.jpg"
+import edu4 from "../images/cara_img4.jpeg";
 
 export default function ImageCarousel() {
   const images = [edu1, edu2, edu3, edu4];
   const [current, setCurrent] = useState(0);
+  const startX = useRef(0);
 
   // Auto slide
   useEffect(() => {
@@ -27,52 +28,76 @@ export default function ImageCarousel() {
     setCurrent((prev) => (prev + 1) % images.length);
   };
 
+  // Swipe Handlers (Mobile + Mouse)
+  const handleStart = (e: React.TouchEvent | React.MouseEvent) => {
+    startX.current =
+      "touches" in e ? e.touches[0].clientX : e.clientX;
+  };
+
+  const handleEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    const endX =
+      "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX;
+
+    const diff = startX.current - endX;
+
+    if (diff > 50) nextSlide();
+    else if (diff < -50) prevSlide();
+  };
+
   return (
-    <section className="py-20 w-full bg-white">
-      <div className="container mx-auto px-10">
-        <div className="relative max-w-8xl mx-auto rounded-3xl overflow-hidden shadow-2xl">
+    <section className="py-16 w-full bg-white">
+      <div className="container mx-auto px-4 md:px-10">
+        <div className="relative max-w-7xl mx-auto rounded-2xl overflow-hidden shadow-2xl">
 
           {/* Slides */}
           <div
             className="flex transition-transform duration-700 ease-in-out"
             style={{ transform: `translateX(-${current * 100}%)` }}
+            onTouchStart={handleStart}
+            onTouchEnd={handleEnd}
+            onMouseDown={handleStart}
+            onMouseUp={handleEnd}
           >
             {images.map((img, index) => (
               <img
                 key={index}
                 src={img}
                 alt={`Slide ${index + 1}`}
-                className="w-full h-[420px] object-cover flex-shrink-0"
+                className="w-full 
+                           h-[250px] sm:h-[300px] md:h-[430px] 
+                           object-cover flex-shrink-0"
               />
             ))}
           </div>
 
-          {/* Left Arrow */}
+          {/* Left Arrow (Hidden on Mobile) */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg"
+            className="hidden md:flex absolute left-5 top-1/2 -translate-y-1/2 
+                       bg-white/80 hover:bg-white p-3 rounded-full shadow-lg"
           >
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
 
-          {/* Right Arrow */}
+          {/* Right Arrow (Hidden on Mobile) */}
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg"
+            className="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 
+                       bg-white/80 hover:bg-white p-3 rounded-full shadow-lg"
           >
             <ChevronRight className="w-6 h-6 text-gray-800" />
           </button>
 
           {/* Dots */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-3">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-3">
             {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrent(index)}
-                className={`w-3 h-3 rounded-full transition ${
+                className={`w-3 h-3 rounded-full transition-all ${
                   current === index
-                    ? "bg-blue-600 scale-110"
-                    : "bg-gray-300"
+                    ? "bg-blue-600 scale-125"
+                    : "bg-white/70 hover:bg-white"
                 }`}
               />
             ))}

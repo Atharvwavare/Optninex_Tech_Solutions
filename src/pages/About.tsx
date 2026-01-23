@@ -1,16 +1,23 @@
 import { Target, Award, Users, Heart } from "lucide-react";
 import { motion } from "framer-motion";
+import { Variants } from "framer-motion";
 
 export default function About() {
   /* ---------- Animation Variants ---------- */
-  const fadeUp = {
-    hidden: { opacity: 0, y: 60 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: "easeOut" },
+  const fadeUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",   // ✅ this one is allowed
     },
-  };
+  },
+};
 
   const stagger = {
     hidden: {},
@@ -25,31 +32,31 @@ export default function About() {
   const values = [
     {
       icon: <Target className="w-8 h-8" />,
-      title: "Innovation",
-      description: "We constantly push boundaries to deliver cutting-edge solutions.",
+      title: "Innovation for Impact",
+      description: "We create products that change how students learn and how teams collaborate.",
     },
     {
       icon: <Heart className="w-8 h-8" />,
-      title: "Customer First",
-      description: "Your success is our priority. We build lasting relationships.",
+      title: "Ownership & Autonomy",
+      description: "We believe in collective intelligence. Every team member has the freedom to suggest improvements and lead initiatives.",
     },
     {
       icon: <Award className="w-8 h-8" />,
-      title: "Excellence",
-      description: "We maintain the highest standards in everything we do.",
+      title: "Excellence in Service",
+      description: "With a network covering 17,000+ pin codes, we pride ourselves on being reliable partners to our customers.",
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "Collaboration",
-      description: "Teamwork and partnership drive our success.",
+      title: "The Make in India Spirit",
+      description: "We are proud contributors to the national vision of self-reliance in technology.",
     },
   ];
 
   const stats = [
     { number: "10K+", label: "Happy Clients" },
-    { number: "50+", label: "Countries Served" },
+    { number: "50+", label: "Upcoming Products" },
     { number: "100+", label: "Products Launched" },
-    { number: "15+", label: "Years Experience" },
+    // { number: "15+", label: "Years Experience" },
   ];
 
   const team = [
@@ -108,14 +115,10 @@ export default function About() {
           <div>
             <h2 className="text-4xl  text-blue-700 font-bold mb-6">Our Story</h2>
              <p className="text-black mb-4 text-lg">
-                Founded in 2009, Optenix Tech Solutions began with a simple mission: to make enterprise-grade
-                technology accessible to businesses of all sizes. What started as a small team of passionate
-                developers has grown into a global leader in digital solutions.
+                Optenix Tech Solutions is a Pune-based hardware and technology service provider specializing in digital classroom and corporate conferencing solutions. As an OEM (Original Equipment Manufacturer) of interactive displays and advanced AV equipment, we design and deliver reliable, future-ready products for educational institutions and enterprises.
               </p>
               <p className="text-black mb-4 text-lg">
-                Today, we serve over 10,000 clients across 50+ countries, delivering innovative products that
-                drive business growth and digital transformation. Our commitment to excellence and customer
-                satisfaction remains unwavering.
+                We develop innovative digital tools and platforms that enhance teaching, learning, and training experiences by integrating cutting-edge technologies such as Artificial Intelligence, Virtual Reality, and cloud-based systems into traditional education and corporate learning environments.
               </p>
               <p className="text-black text-lg">
                 We believe in the power of technology to transform businesses and improve lives. Every product
@@ -162,7 +165,7 @@ export default function About() {
         <h3 className="text-2xl font-semibold text-blue-700 mb-4">
           Interactive Hardware
         </h3>
-        <p className="text-black mb-4">
+        <p className="text-black mb-4 text-md">
           Design and manufacture high-performance interactive devices for modern
           classrooms and enterprises.
         </p>
@@ -224,7 +227,8 @@ export default function About() {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center
+">
           {stats.map((s, i) => (
             <motion.div key={i} variants={fadeUp}>
               <div className="text-5xl font-bold text-blue-600">{s.number}</div>
@@ -286,15 +290,15 @@ export default function About() {
         </p>
 
         <ul className="space-y-4 text-black">
-          <li className="flex items-start gap-3">
+          <li className="flex items-start gap-3 text-lg">
             <span className="text-blue-600 text-xl">✓</span>
             Deliver innovative and scalable digital solutions
           </li>
-          <li className="flex items-start gap-3">
+          <li className="flex items-start gap-3 text-lg">
             <span className="text-blue-600 text-xl">✓</span>
             Bridge the gap between technology and real-world needs
           </li>
-          <li className="flex items-start gap-3">
+          <li className="flex items-start gap-3 text-lg">
             <span className="text-blue-600 text-xl">✓</span>
             Enable smarter, more connected environments
           </li>

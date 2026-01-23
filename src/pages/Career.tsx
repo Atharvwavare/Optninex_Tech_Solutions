@@ -12,11 +12,11 @@ export default function Career() {
     openPositionsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-hidden">
 
       {/* Hero Section */}
       <motion.section
-        className="relative bg-gradient-to-br from-blue-50 via-white to-cyan-50 py-20"
+        className="bg-gradient-to-br from-blue-50 via-white to-cyan-50 py-20"
         initial={{ opacity: 0, y: -50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -30,7 +30,7 @@ export default function Career() {
                 Amazing Team
               </span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-black mb-8">
               Build the future of technology with talented people who share your passion for innovation.
             </p>
             <button
@@ -61,15 +61,14 @@ export default function Career() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-4xl font-bold text-blue-600 mb-6">Why Work at Optenix?</h2>
-              <p className="text-black mb-4">
-                At Optenix Tech Solutions, we are more than just a company. We are a community of innovators,
-                problem-solvers, and dreamers who are passionate about making a difference.
+              <p className="text-black mb-4 text-lg">
+                At Optenix Tech Solutions, we aren't just selling screens; we are building the digital backbone of Indian schools and offices. Based in the heart of Pune’s tech hub, we are a fast-growing team of innovators, engineers, and problem-solvers dedicated to local manufacturing and world-class service.
               </p>
-              <p className="text-black mb-4">
+              <p className="text-black mb-4 text-lg">
                 We believe in fostering a culture of creativity, collaboration, and continuous learning. Here,
                 your ideas matter, your growth is prioritized, and your contributions make a real impact.
               </p>
-              <p className="text-black">
+              <p className="text-black text-lg">
                 Join us in our mission to transform businesses through technology and innovation.
               </p>
             </motion.div>
@@ -131,7 +130,7 @@ export default function Career() {
                   {benefit.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{benefit.title}</h3>
-                <p className="text-gray-600 text-sm">{benefit.description}</p>
+                <p className="text-black text-md">{benefit.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -155,7 +154,7 @@ export default function Career() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-bold text-blue-600 mb-4">Open Positions</h2>
+            <h2 className="text-4xl font-bold text-blue-600 mb-4">Current Openings</h2>
             <p className="text-xl text-black max-w-2xl mx-auto">
               Find your next opportunity and make an impact.
             </p>
@@ -174,8 +173,8 @@ export default function Career() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div className="mb-4 md:mb-0">
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">{job.title}</h3>
-                    <p className="text-gray-600 mb-3">{job.description}</p>
-                    <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                    <p className="text-black mb-3">{job.description}</p>
+                    <div className="flex flex-wrap gap-3 text-sm text-black">
                       <span className="flex items-center space-x-1">
                         <Briefcase className="w-4 h-4" />
                         <span>{job.department}</span>
@@ -190,9 +189,13 @@ export default function Career() {
                       </span>
                     </div>
                   </div>
-                  <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow whitespace-nowrap">
-                    Apply Now
-                  </button>
+                 <a
+  href="mailto:bhoikiran241@gmail.com?subject=Job Application&body=Hello,%0D%0A%0D%0AI would like to apply for the position."
+  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow whitespace-nowrap inline-block"
+>
+  Apply Now
+</a>
+
                 </div>
               </motion.div>
             ))}
@@ -205,12 +208,16 @@ export default function Career() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <p className="text-gray-600 mb-4">
-              Do not see a role that fits? We are always looking for talented people.
+            <p className="text-black mb-4">
+              We are always looking for passionate individuals. Even if you don't see a perfect match below, feel free to send us your resume!
             </p>
-            <button className="px-8 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-              Send Us Your Resume
-            </button>
+            <a
+  href="mailto:kirnabhoi@241@gmail.com?subject=Job Application&body=Hello,%0D%0A%0D%0AI would like to apply for a position. Please find my resume attached.%0D%0A%0D%0ARegards,"
+  className="inline-block px-8 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+>
+  Send Us Your Resume
+</a>
+
           </motion.div>
         </div>
       </motion.section>

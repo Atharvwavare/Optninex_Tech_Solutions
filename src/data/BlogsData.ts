@@ -56,24 +56,26 @@ export const posts: BlogPost[] = [
     category: 'Analytics',
     readTime: '5 min read',
   },
+ {
+  title: 'National Education Policy (NEP) 2020: Transforming India’s Education System',
+  excerpt: 'An overview of how the National Education Policy 2020 is reshaping curriculum, assessment, and learning outcomes across India.',
+  image: 'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800',
+  author: 'Ananya Sharma',
+  date: 'February 10, 2024',
+  category: 'NEP',
+  readTime: '7 min read',
+}
+,
+  
   {
-    title: 'The Rise of Edge Computing and IoT Integration',
-    excerpt: 'Understanding the convergence of edge computing and IoT devices in modern infrastructure.',
-    image: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'Michael Chen',
-    date: 'December 21, 2023',
-    category: 'Technology',
-    readTime: '6 min read',
-  },
-  {
-    title: 'DevOps Culture: Bridging Development and Operations',
-    excerpt: 'How DevOps practices can improve collaboration, efficiency, and product quality in your organization.',
-    image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'David Kim',
-    date: 'December 18, 2023',
-    category: 'DevOps',
-    readTime: '7 min read',
-  },
+  title: 'Engineering Scalable Systems for High Performance',
+  excerpt: 'Learn core engineering principles behind building reliable, scalable, and high-performance systems.',
+  image: 'https://images.pexels.com/photos/3862373/pexels-photo-3862373.jpeg?auto=compress&cs=tinysrgb&w=800',
+  author: 'Rahul Sharma',
+  date: 'January 10, 2024',
+  category: 'Engineering',
+  readTime: '9 min read',
+},
 ];
 
 export const categories = [
@@ -83,5 +85,6 @@ export const categories = [
   'Security',
   'Development',
   'Analytics',
-  'DevOps',
+  'NEP',
+  'Engineering'
 ];

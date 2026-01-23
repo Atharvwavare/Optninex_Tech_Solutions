@@ -43,17 +43,17 @@ export const benefits: Benefit[] = [
 
 export const openings: Opening[] = [
   {
-    title: "Senior Full Stack Developer",
+    title: " Full Stack Developer",
     department: "Engineering",
-    location: "San Francisco, CA",
+    location: "Pune,India",
     type: "Full-time",
     description:
-      "We are looking for an experienced full-stack developer to join our core engineering team.",
+      "We are looking for an  full-stack developer to join our core engineering and business team.",
   },
   {
     title: "Product Manager",
     department: "Product",
-    location: "Remote",
+    location: "Pune,India",
     type: "Full-time",
     description:
       "Lead product strategy and development for our cloud solutions platform.",
@@ -61,33 +61,33 @@ export const openings: Opening[] = [
   {
     title: "UX/UI Designer",
     department: "Design",
-    location: "New York, NY",
+    location: "Pune,India",
     type: "Full-time",
     description:
       "Create beautiful, intuitive user experiences for our digital products.",
   },
   {
-    title: "DevOps Engineer",
-    department: "Engineering",
-    location: "Austin, TX",
-    type: "Full-time",
-    description:
-      "Build and maintain our cloud infrastructure and deployment pipelines.",
-  },
-  {
-    title: "Marketing Manager",
+    title: "Lead Generation Executive",
     department: "Marketing",
-    location: "Remote",
+    location: "Pune,India",
     type: "Full-time",
     description:
-      "Drive our marketing strategy and brand awareness across multiple channels.",
+      "Drive business growth by identifying, nurturing, and converting high-quality leads into long-term client relationships.",
   },
   {
-    title: "Data Scientist",
-    department: "Analytics",
-    location: "San Francisco, CA",
+    title: "Insight Sales Executive",
+    department: "Marketing",
+    location: "Pune,India",
     type: "Full-time",
     description:
-      "Analyze complex data sets and build machine learning models to drive insights.",
+      "Drive revenue growth by engaging prospects, qualifying leads, and converting opportunities into successful sales.",
+  },
+  {
+    title: "Field Sales Executive",
+    department: "Marketing and business",
+    location: "Pune,India",
+    type: "Full-time",
+    description:
+      "Identify new business opportunities, meet clients on-site, and close deals to drive revenue growth in assigned territories.",
   },
 ];

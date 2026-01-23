@@ -3,10 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Star, Search } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { products, Product } from "../data/ProductsData";
+import { useCart } from "../context/CartContext";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [qty, setQty] = useState(1);
 
   // -------------------- Search --------------------
@@ -39,6 +41,29 @@ export default function ProductDetails() {
 
   // -------------------- Suggested Products --------------------
   const suggestions = products.filter((p) => p.id !== id); // exclude current product
+
+  // -------------------- Handlers --------------------
+  const handleAddToCart = () => {
+    addToCart({
+      id: Number(product.id),
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: qty,
+    });
+    alert("Product added to cart");
+  };
+
+  const handleBuyNow = () => {
+    addToCart({
+      id: Number(product.id),
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: qty,
+    });
+    navigate("/buy-now");
+  };
 
   return (
     <section className="min-h-screen bg-white py-20">
@@ -140,11 +165,17 @@ export default function ProductDetails() {
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-4 mb-6">
-              <button className="bg-blue-600 hover:bg-blue-400 text-black px-8 py-3 font-semibold rounded transition">
+            <div className="flex gap-4 mb-6 flex-wrap">
+              <button
+                onClick={handleAddToCart}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-semibold rounded transition flex-1"
+              >
                 Add to Cart
               </button>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 font-semibold rounded transition">
+              <button
+                onClick={handleBuyNow}
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded transition flex-1"
+              >
                 Buy Now
               </button>
             </div>

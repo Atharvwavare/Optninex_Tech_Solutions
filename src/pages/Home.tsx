@@ -1,13 +1,22 @@
 import { Link } from 'react-router-dom';
 import {
   Zap, Shield, Cloud, Code, TrendingUp, Users,
-  ArrowRight, Check
+  ArrowRight
 } from 'lucide-react';
 
 import { motion } from "framer-motion";
 
 import HomeImg from "../images/bg1.jpg";
  import ImageCarousel from "../others/Imagecarousel";
+
+ import ptzCamera from "../images/optenix_4k_ptz_camera.jpeg";
+
+ import flatPanel from "../images/interactive_flat_panel.png";
+
+ import microphones from "../images/Dual_microphones.png"
+
+ import FeaturedProducts from '../others/FeaturedProducts';
+
 
 
 
@@ -46,22 +55,58 @@ export default function Home() {
   ];
 
   const products = [
-    {
-      name: 'OptenixCloud Pro',
-      price: '$99/mo',
-      features: ['Unlimited Storage', 'Advanced Analytics', 'Priority Support', 'Custom Integrations'],
-    },
-    {
-      name: 'OptenixAI Suite',
-      price: '$149/mo',
-      features: ['AI-Powered Insights', 'Machine Learning', 'Predictive Analytics', 'API Access'],
-    },
-    {
-      name: 'OptenixSecure',
-      price: '$79/mo',
-      features: ['Enterprise Security', 'Threat Detection', 'Data Encryption', 'Compliance Tools'],
-    },
-  ];
+  {
+     name: "Optenix 4K AI PTZ Camera",
+    image: ptzCamera,
+    specifications: [
+      "AI Auto Tracking & Auto Framing",
+      "4K Ultra HD Sony CMOS Sensor",
+      "12X Optical + 16X Digital Zoom",
+      "HDMI + SDI + IP + USB Outputs",
+      "Low Light Noise Reduction",
+      "Remote Control via Network & USB",
+    ],
+  },
+  {
+    name: "Interactive Flat Panel S1 Series",
+    image: flatPanel,
+    specifications: [
+  "Available Sizes: 65”, 75”, 86”",
+  "4K Ultra HD – 3840 × 2160 (H × V)",
+  "Brightness: 400 nits",
+  "Eye Care Technology: TÜV Low Blue Light Certified & TÜV Flicker-Free Technology",
+  "Contrast Ratio: 1,200 : 1 (Typical), 50,000 : 1 (Dynamic)",
+  "Color Performance: 1.07 Billion Colors (10-bit), 72% NTSC, Delta E ≤ 2",
+  "Backlight Life: Up to 50,000 Hours",
+  "Operating System: Android 13.0",
+  "CPU: 2.0 GHz Quad-Core ARM A55",
+  "GPU: Mali-G52 MP2",
+  "RAM: 8 GB",
+  "Storage (ROM): 128 GB"
+],
+  },
+  {
+    name: "Digital Podium",
+    image: microphones,
+    specifications: [
+      "P-Cap Touch",
+      "Embedded 13000Ah Battery with 5 hours battery life",
+      "HDMI & USB Ports",
+      "Wired and Wireless Screen-Sharing",
+      "OnStage Annotation",
+      "Smart Lectern",
+      "CPU: ARM Octa Core A76*4 + A55*4",
+      "Screen Size: 27",
+      "Resolution: 3840*2160(UHD)",
+      "Stands: 1130mm-1326mm",
+      "System: Android 13.0",
+      "Working Frequency: 2.4G + 1.8G",
+      "ROM: 64GB",
+      "RAM: 8GB"
+    ],
+  },
+];
+
 
   
 
@@ -136,14 +181,13 @@ export default function Home() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
 
-             <a
-           href="https://docs.google.com/forms/d/e/1FAIpQLSda0JF1onHKb4w2jqcYjPOahtPBMaynaTrdI65646A_irBddA/viewform?usp=header"
-           target="_blank"
-          rel="noopener noreferrer"
-          className="px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold border-2 border-white hover:bg-transparent hover:text-white transition-all"
-          >
-  Learn More
-</a>
+             <Link 
+               to ="/about" 
+               className="px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold border-2 border-white hover:bg-transparent hover:text-white transition-all">
+             Learn More
+             </Link>
+  
+
           </div>
         </motion.div>
       </div>
@@ -183,7 +227,7 @@ export default function Home() {
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
             {feature.title}
           </h3>
-          <p className="text-black text-md">{feature.description}</p>
+          <p className="text-black text-lg">{feature.description}</p>
         </motion.div>
       ))}
     </div>
@@ -211,7 +255,7 @@ export default function Home() {
 
       {/* RIGHT CONTENT */}
       <div>
-        <h2 className="text-4xl font-bold text-gray-900 mb-6 leading-tight">
+        <h2 className="text-4xl font-bold text-blue-700 mb-6 leading-tight">
           Transforming Education <br /> & Enterprises
         </h2>
 
@@ -241,7 +285,7 @@ export default function Home() {
         >
           Explore Our Products
         </Link>
-      </div>
+      </div>x
 
     </div>
   </div>
@@ -250,40 +294,10 @@ export default function Home() {
 
             <ImageCarousel/>
 
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-blue-700 mb-4">Featured Products</h2>
-            <p className="text-xl text-black max-w-2xl mx-auto">
-              Choose the perfect solution for your business needs.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {products.map((product, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-shadow"
-              >
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent mb-6">
-                  {product.price}
-                </div>
-                <ul className="space-y-3 mb-8">
-                  {product.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center space-x-2 text-gray-600">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
-                  Get Started
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+     {/* Featured Products Section */}
+      <FeaturedProducts products={products} />
+
+
 
       <section className="py-20 bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
         <div className="container mx-auto px-6 text-center">

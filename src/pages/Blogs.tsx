@@ -2,8 +2,18 @@
 import { Calendar, ArrowRight, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { featuredPost, posts, categories } from '../data/BlogsData';
+import { useState, useMemo } from "react";
+
 
 export default function Blogs() {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+// Filter posts by selected category
+const filteredPosts = useMemo(() => {
+  if (selectedCategory === "All") return posts;
+  return posts.filter((post) => post.category === selectedCategory);
+}, [selectedCategory]);
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -42,22 +52,24 @@ export default function Blogs() {
               visible: { transition: { staggerChildren: 0.1 } },
             }}
           >
-            {categories.map((category, index) => (
-              <motion.button
-                key={index}
-                className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                  index === 0
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600'
-                }`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                {category}
-              </motion.button>
-            ))}
+           {categories.map((category, index) => (
+  <motion.button
+    key={index}
+    onClick={() => setSelectedCategory(category)}   // 🔥 CLICK HANDLER
+    className={`px-6 py-2 rounded-full font-medium transition-colors ${
+      selectedCategory === category
+        ? 'bg-blue-600 text-white shadow-md'
+        : 'bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600'
+    }`}
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: index * 0.05 }}
+  >
+    {category}
+  </motion.button>
+))}
+
           </motion.div>
 
           {/* Featured Post */}
@@ -136,7 +148,7 @@ export default function Blogs() {
               visible: { transition: { staggerChildren: 0.1 } },
             }}
           >
-            {posts.map((post, index) => (
+            {filteredPosts.map((post, index) => (
               <motion.article
                 key={index}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow group"
@@ -181,11 +193,11 @@ export default function Blogs() {
           </motion.div>
 
           {/* Load More */}
-          <motion.div className="text-center mt-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+          {/* <motion.div className="text-center mt-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
               Load More Articles
             </button>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
     </div>

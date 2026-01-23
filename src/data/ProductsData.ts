@@ -29,7 +29,7 @@ export const products: Product[] = [
   },
   {
     id: "2",
-    name: "Optenix Pro Headphones",
+    name: "4k AI PTZ Camera",
     image: product2,
     price: 5499,
     originalPrice: 7999,

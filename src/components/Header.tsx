@@ -1,22 +1,45 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, User } from "lucide-react";
-import { useState, useEffect } from "react";
-import OptenixLogo from "../images/OptenixLogo.png";
+import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import OptenixLogo from "../images/OptenixWhite.png";
+import OptenixBlackLogo from "../images/OptenixBlack.png";
 import { useCart } from "../context/CartContext";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems } = useCart(); // Get cart items from context
+  const { cartItems } = useCart();
 
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Dummy user from localStorage
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+
+  // Scroll effect (only background + shadow, no width change)
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 60);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const navLinks = [
@@ -31,23 +54,33 @@ function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setShowUserMenu(false);
+    navigate("/login");
+  };
+
   return (
     <>
       {/* HEADER */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-colors duration-300 ${
           scrolled
             ? "bg-white shadow-md"
             : "bg-gradient-to-r from-[#3b0a6f] via-[#4b117f] to-[#2f1fff]"
         }`}
       >
-        <nav className="container mx-auto px-6 py-4">
+        {/* FIXED WIDTH CONTAINER */}
+        <nav className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
 
-            {/* LOGO */}
-            <Link to="/" className="flex items-center">
-              <img src={OptenixLogo} alt="Optenix" className="h-16 w-auto" />
-            </Link>
+            {/* LOGO (fixed height always, no jump) */}
+            <img
+              src={scrolled ? OptenixBlackLogo : OptenixLogo}
+              alt="Optenix"
+              className="h-14 w-auto transition-opacity duration-300 cursor-pointer"
+              onClick={() => navigate("/")}
+            />
 
             {/* DESKTOP NAV */}
             <div className="hidden md:flex items-center space-x-10">
@@ -66,8 +99,6 @@ function Header() {
                   }`}
                 >
                   {link.name}
-
-                  {/* UNDERLINE */}
                   <span
                     className={`absolute left-0 -bottom-1 h-[2px] w-full bg-blue-600 transform transition-transform duration-300 origin-left ${
                       isActive(link.path)
@@ -79,23 +110,67 @@ function Header() {
               ))}
             </div>
 
-            {/* ACTIONS */}
-            <div className="flex items-center gap-5">
+            {/* RIGHT ACTIONS */}
+            <div className="flex items-center gap-5 relative">
 
-              {/* LOGIN (Desktop + Mobile) */}
-              <button
-                onClick={() => navigate("/login")}
-                className={`flex items-center gap-1 font-medium transition-colors ${
-                  scrolled
-                    ? "text-gray-800 hover:text-blue-600"
-                    : "text-white hover:text-gray-200"
-                }`}
-              >
-                <User className="w-5 h-5 " />
-                <span className="text-sm">Login</span>
-              </button>
+              {/* USER LOGIN / PROFILE */}
+              {!user ? (
+                <button
+                  onClick={() => navigate("/login")}
+                  className={`flex items-center gap-1 font-medium transition-colors ${
+                    scrolled
+                      ? "text-gray-800 hover:text-blue-600"
+                      : "text-white hover:text-gray-200"
+                  }`}
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm">Login</span>
+                </button>
+              ) : (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className={`flex items-center gap-2 font-medium transition-colors ${
+                      scrolled
+                        ? "text-gray-800 hover:text-blue-600"
+                        : "text-white hover:text-gray-200"
+                    }`}
+                  >
+                    <User className="w-6 h-6" />
+                    <span className="hidden sm:block">{user.name}</span>
+                  </button>
 
-              {/* CART (Desktop only) */}
+                  {/* USER DROPDOWN */}
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+                      <div className="p-4 border-b">
+                        <p className="font-semibold text-gray-800">{user.name}</p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          navigate("/profile");
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-100 text-gray-700"
+                      >
+                        My Profile
+                      </button>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-4 py-3 hover:bg-red-50 text-red-600 font-medium"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* CART */}
               <button
                 onClick={() => navigate("/cart")}
                 className={`relative hidden md:flex items-center gap-2 transition-colors ${
@@ -103,12 +178,11 @@ function Header() {
                 }`}
               >
                 <ShoppingCart className="w-5 h-5" />
-                <span>Cart</span>
+                <span className="text-sm">Cart</span>
 
-                {/* Cart Badge */}
                 {cartItems.length > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                    {cartItems.reduce((t, i) => t + i.quantity, 0)}
                   </span>
                 )}
               </button>
@@ -136,7 +210,7 @@ function Header() {
         }`}
       />
 
-      {/* RIGHT DRAWER */}
+      {/* MOBILE DRAWER */}
       <div
         className={`fixed top-0 right-0 z-50 h-full w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-300 md:hidden ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -144,15 +218,15 @@ function Header() {
       >
         <div className="p-6 flex flex-col h-full">
 
-          {/* DRAWER HEADER */}
+          {/* TOP */}
           <div className="flex items-center justify-between mb-6">
-            <img src={OptenixLogo} alt="Optenix" className="h-10" />
+            <img src={OptenixBlackLogo} alt="Optenix" className="h-10" />
             <button onClick={() => setIsMenuOpen(false)}>
               <X className="w-6 h-6 text-gray-800" />
             </button>
           </div>
 
-          {/* NAV LINKS */}
+          {/* LINKS */}
           <div className="flex flex-col gap-4 flex-grow">
             {navLinks.map((link) => (
               <Link
@@ -170,19 +244,28 @@ function Header() {
             ))}
           </div>
 
-          {/* LOGIN BUTTON */}
-          <button
-            onClick={() => {
-              setIsMenuOpen(false);
-              navigate("/login");
-            }}
-            className="w-full mt-4 py-3 flex items-center justify-center gap-2 border border-blue-600 text-blue-600 rounded-lg font-semibold"
-          >
-            <User className="w-5 h-5" />
-            Login
-          </button>
+          {/* MOBILE ACTIONS */}
+          {!user ? (
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate("/login");
+              }}
+              className="w-full mt-4 py-3 flex items-center justify-center gap-2 border border-blue-600 text-blue-600 rounded-lg font-semibold"
+            >
+              <User className="w-5 h-5" />
+              Login
+            </button>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="w-full mt-4 py-3 flex items-center justify-center gap-2 border border-red-500 text-red-600 rounded-lg font-semibold"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </button>
+          )}
 
-          {/* CART BUTTON */}
           <button
             onClick={() => {
               setIsMenuOpen(false);
@@ -191,7 +274,7 @@ function Header() {
             className="w-full mt-3 py-3 flex items-center justify-center gap-2 border border-blue-600 text-blue-600 rounded-lg font-semibold"
           >
             <ShoppingCart className="w-5 h-5" />
-            Cart ({cartItems.reduce((total, item) => total + item.quantity, 0)})
+            Cart ({cartItems.reduce((t, i) => t + i.quantity, 0)})
           </button>
 
         </div>
@@ -201,4 +284,3 @@ function Header() {
 }
 
 export default Header;
-  

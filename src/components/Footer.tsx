@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from 'lucide-react';
-import OptenixLogo from "../images/OptenixLogo.png"
+import OptenixLogo from "../images/OptenixWhite.png"
 
 export default function Footer() {
   return (
@@ -18,16 +18,16 @@ export default function Footer() {
               Leading provider of digital solutions and innovative tech products for businesses worldwide.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-blue-400 transition-colors">
+              <a href="https://www.facebook.com/share/1Kx3YXv6HP/" className="hover:text-blue-400 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-blue-400 transition-colors">
+              <a href="https://x.com/optenix_tech" className="hover:text-blue-400 transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-blue-400 transition-colors">
+              <a href="https://www.linkedin.com/company/optenix-tech-solutions/posts/?feedView=all" className="hover:text-blue-400 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-blue-400 transition-colors">
+              <a href="https://www.instagram.com/optenixtechsolutions?igsh=MWdoeWpxdjl5ZWs3cQ==" className="hover:text-blue-400 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>

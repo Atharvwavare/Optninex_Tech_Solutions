@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function Register() {
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -14,6 +15,7 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // ✅ Email validation
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -31,6 +33,7 @@ export default function Register() {
     return true;
   };
 
+  // ✅ Password + Confirm validation
   const validatePasswords = (pass: string, confirmPass: string) => {
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
@@ -40,9 +43,7 @@ export default function Register() {
     }
 
     if (!specialCharRegex.test(pass)) {
-      setPasswordError(
-        "Password must contain at least one special character"
-      );
+      setPasswordError("Password must contain at least one special character");
       return false;
     }
 
@@ -75,7 +76,8 @@ export default function Register() {
     validatePasswords(password, value);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // 🔥 FRONTEND-ONLY SUBMIT (NO BACKEND)
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const isEmailValid = validateEmail(email);
@@ -83,37 +85,20 @@ export default function Register() {
 
     if (!isEmailValid || !isPasswordValid) return;
 
-    try {
-      // 🔴 SEND DATA TO BACKEND
-      const res = await fetch("http://localhost:5001/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Registration failed");
-        return;
-      }
-
-      alert("Registered successfully!");
-      navigate("/login"); // Redirect to login
-    } catch (err) {
-      alert("Server not reachable");
-      console.error(err);
-    }
+    // ✅ TEST SUCCESS FLOW
+    alert("Registered successfully! (Test Mode)");
+    navigate("/login"); // 👉 Go directly to dashboard
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2b0057] to-[#2f1fff] px-4">
-      <div className="bg-white p-8 rounded-1xl shadow-xl w-full max-w-md">
+      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Create an Account
         </h2>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Full Name (optional, UI only) */}
           <input
             type="text"
             placeholder="Full Name"
@@ -183,6 +168,7 @@ export default function Register() {
             <p className="text-sm text-red-600 -mt-2">{passwordError}</p>
           )}
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg"

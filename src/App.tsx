@@ -17,13 +17,24 @@ import CartPage from './pages/CartPage';
 import Admin from "./authenticate/Admin";
 
 
+import ScrollToTop from './others/ScrollToTop';
+
+import Dashboard from './authenticate/Dashboard';
+import Profile from './authenticate/Profile';
+import BuyNowPage from './pages/BuyNowPage';
+
+
 function App() {
+  
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />   {/* 🔥 THIS FIXES SCROLL ISSUE */}
       <Header />
 
       <main className="flex-grow">
        <Routes>
+
+
   <Route path="/" element={<Home />} />
   <Route path="/about" element={<About />} />
   <Route path="/shop" element={<Shop />} />
@@ -39,7 +50,15 @@ function App() {
 
   <Route path="/login" element={<Login />} />
   <Route path="/register" element={<Register />} />
-  <Route path="/admin" element={<Admin />} />
+
+  <Route path='/buy-now' element={<BuyNowPage/>}/>
+  {/* AFTER LOGIN */}
+          <Route path="/home" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<Admin />} />
+
+          <Route path='/profile' element={<Profile/>}/>
+
 </Routes>
 
       </main>

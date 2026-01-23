@@ -1,34 +1,37 @@
 // src/pages/Contact.tsx
-import { Mail, Phone, MapPin, Send, MessageSquare, Clock } from 'lucide-react';
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, Send, MessageSquare, Clock } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
 
- const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const { name, email, subject, message } = formData;
+    const { name, email, subject, message } = formData;
 
-  const mailtoLink = `
+    const mailtoLink = `
     mailto:atharvwavare7@gmail.com
     ?subject=${encodeURIComponent(subject || "New Contact Form Submission")}
     &body=${encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+      `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
     )}
   `;
 
-  window.location.href = mailtoLink;
-};
+    window.location.href = mailtoLink;
+  };
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -38,26 +41,27 @@ export default function Contact() {
   const contactInfo = [
     {
       icon: <Phone className="w-6 h-6" />,
-      title: 'Phone',
-      details: '+91 9766855918',
-      subtext: 'Mon-Fri 9am-6pm PST',
+      title: "Phone",
+      details: "+91 9766855918",
+      subtext: "Mon-Fri 9am-6pm PST",
     },
     {
       icon: <Mail className="w-6 h-6" />,
-      title: 'Email',
-      details: 'sneha.sahare@optenix.in   vinayak.raut@optenix.in',
-      subtext: 'We will respond within 24 hours',
+      title: "Email",
+      details: "sneha.sahare@optenix.in   vinayak.raut@optenix.in",
+      subtext: "We will respond within 24 hours",
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      title: 'Address',
-      details: '428 Optenix Tech Solutions',
-      subtext: 'Geras Imperium Rise, Near Wipro Circle Metro Station, Hinjewadi Phase II, Pune, Maharashtra',
+      title: "Address",
+      details: "428 Optenix Tech Solutions",
+      subtext:
+        "Geras Imperium Rise, Near Wipro Circle Metro Station, Hinjewadi Phase II, Pune, Maharashtra",
     },
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-hidden">
       {/* Hero Section */}
       <motion.section
         className="relative bg-gradient-to-br from-blue-50 via-white to-cyan-50 py-20"
@@ -69,13 +73,14 @@ export default function Contact() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Get in{' '}
+              Get in{" "}
               <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                 Touch
               </span>
             </h1>
             <p className="text-xl text-black">
-              Reach out to us for queries, partnerships, or product demonstrations.
+              Reach out to us for queries, partnerships, or product
+              demonstrations.
             </p>
           </div>
         </div>
@@ -106,7 +111,9 @@ export default function Contact() {
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center mb-4 text-blue-600 mx-auto">
                   {info.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{info.title}</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {info.title}
+                </h3>
                 <p className="text-gray-900 font-medium mb-1">{info.details}</p>
                 <p className="text-md text-gray-600">{info.subtext}</p>
               </motion.div>
@@ -121,13 +128,17 @@ export default function Contact() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Send Us a Message
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {['name', 'email', 'subject', 'message'].map((field, idx) => {
-                  if (field === 'subject') {
+                {["name", "email", "subject", "message"].map((field, idx) => {
+                  if (field === "subject") {
                     return (
                       <div key={idx}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Subject
+                        </label>
                         <select
                           name="subject"
                           value={formData.subject}
@@ -144,10 +155,12 @@ export default function Contact() {
                         </select>
                       </div>
                     );
-                  } else if (field === 'message') {
+                  } else if (field === "message") {
                     return (
                       <div key={idx}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Message
+                        </label>
                         <textarea
                           name="message"
                           value={formData.message}
@@ -163,15 +176,17 @@ export default function Contact() {
                     return (
                       <div key={idx}>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          {field === 'name' ? 'Full Name' : 'Email Address'}
+                          {field === "name" ? "Full Name" : "Email Address"}
                         </label>
                         <input
-                          type={field === 'email' ? 'email' : 'text'}
+                          type={field === "email" ? "email" : "text"}
                           name={field}
                           value={formData[field as keyof typeof formData]}
                           onChange={handleChange}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                          placeholder={field === 'name' ? 'John Doe' : 'john@example.com'}
+                          placeholder={
+                            field === "name" ? "John Doe" : "john@example.com"
+                          }
                           required
                         />
                       </div>
@@ -195,18 +210,35 @@ export default function Contact() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Why Contact Us?</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Why Contact Us?
+              </h2>
               <motion.div
                 className="space-y-6"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                variants={{ visible: { transition: { staggerChildren: 0.2 } }, hidden: {} }}
+                variants={{
+                  visible: { transition: { staggerChildren: 0.2 } },
+                  hidden: {},
+                }}
               >
                 {[
-                  { icon: MessageSquare, title: 'Expert Consultation', desc: 'Get personalized advice from our team of technology experts to find the perfect solution for your needs.' },
-                  { icon: Clock, title: 'Quick Response', desc: 'We value your time. Expect a response within 24 hours on business days.' },
-                  { icon: Mail, title: 'Direct Communication', desc: 'Speak directly with decision-makers who can help move your project forward.' }
+                  {
+                    icon: MessageSquare,
+                    title: "Expert Consultation",
+                    desc: "Get personalized advice from our team of technology experts to find the perfect solution for your needs.",
+                  },
+                  {
+                    icon: Clock,
+                    title: "Quick Response",
+                    desc: "We value your time. Expect a response within 24 hours on business days.",
+                  },
+                  {
+                    icon: Mail,
+                    title: "Direct Communication",
+                    desc: "Speak directly with decision-makers who can help move your project forward.",
+                  },
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
@@ -222,7 +254,9 @@ export default function Contact() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        {item.title}
+                      </h3>
                       <p className="text-gray-600">{item.desc}</p>
                     </div>
                   </motion.div>
@@ -236,7 +270,9 @@ export default function Contact() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Business Hours</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  Business Hours
+                </h3>
                 <div className="space-y-2 text-gray-600">
                   <p>Monday - Friday: 9:00 AM - 6:00 PM PST</p>
                   <p>Saturday: 10:00 AM - 4:00 PM PST</p>
