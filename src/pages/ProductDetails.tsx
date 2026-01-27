@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { products, Product } from "../data/ProductsData";
 import { useCart } from "../context/CartContext";
 import CartPopup from "../others/CartPopup";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -21,6 +22,8 @@ export default function ProductDetails() {
   
 
   const [showAllSpecs, setShowAllSpecs] = useState(false);
+
+  const { user } = useAuth();  // 🔥 add this
 
   
 
@@ -110,7 +113,18 @@ export default function ProductDetails() {
     addToCart(item);
 
     // 🔥 Navigate to Place Order page
+   if (!user) {
+    // 🔥 Pass the product id to login page
+    navigate("/login", {
+      state: {
+        from: location.pathname,  // "/shop/:id"
+        redirectTo: `/shop/${product.id}`,
+        productId: product.id,    // optional but useful
+      },
+    });
+  } else {
     navigate("/place-order");
+  }
   };
 
   // -------------------- Suggested Products --------------------

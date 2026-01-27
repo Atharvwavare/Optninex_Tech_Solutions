@@ -2,10 +2,11 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { products } from "../data/ProductsData";
 
 export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation();   // 🔥 NEW
+  const location = useLocation(); // 🔥 NEW
   const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -15,9 +16,23 @@ export default function Login() {
 
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const state = location.state as any;
 
-  // 🔥 Where to go after login
-  const from = (location.state as any)?.from || "/home";
+  // Product id passed from Buy Now / Product page
+  const productId = state?.productId;
+
+  // 🔥 Find product safely (optional but good practice)
+  const selectedProduct = productId
+    ? products.find((p) => p.id === productId)
+    :productId;
+  // 🔥 Decide where to go after login
+  const from =
+    state?.from || // highest priority (protected route, place-order etc.)
+    (selectedProduct
+      ? `/shop/${selectedProduct.id}` // 🔥 SAME PRODUCT PAGE
+      : "/shop"); // fallback only if nothing else
+
+  const redirectTo = state?.redirectTo || from;
 
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -87,8 +102,8 @@ export default function Login() {
 
     alert("Login successful!");
 
-    // 🔥 GO BACK TO ORIGINAL PAGE OR HOME
-    navigate(from, { replace: true });
+    // Go directly to the final target (place-order)
+    navigate(redirectTo || from, { replace: true });
   };
 
   return (
@@ -160,7 +175,11 @@ export default function Login() {
 
         <p className="text-center text-gray-600 mt-4">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-600 font-medium">
+          <Link
+            to="/register"
+            state={{ from, redirectTo }}
+            className="text-blue-600 font-medium"
+          >
             Register
           </Link>
         </p>

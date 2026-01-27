@@ -1,9 +1,18 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export default function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Where to go after register (default = home)
+  const state = location.state as any;
+
+  const from = state?.from || "/"; // page where user came from
+  const redirectTo = state?.redirectTo || "/"; // final target (place-order)
+
+  // after user is registered + logged in
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -69,7 +78,7 @@ export default function Register() {
   };
 
   const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.target.value;
     setConfirmPassword(value);
@@ -87,7 +96,14 @@ export default function Register() {
 
     // ✅ TEST SUCCESS FLOW
     alert("Registered successfully! (Test Mode)");
-    navigate("/login"); // 👉 Go directly to dashboard
+
+    // First go back to the page where Buy Now was clicked (cart)
+    navigate(from, { replace: true });
+
+    // After small delay, go to place-order automatically
+    setTimeout(() => {
+      navigate(redirectTo);
+    }, 200);
   };
 
   return (

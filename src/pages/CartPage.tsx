@@ -3,14 +3,16 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Star, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
 
 export default function CartPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { cartItems, removeFromCart, clearCart, addToCart } = useCart();
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
   // Update quantity using + / - buttons
@@ -127,17 +129,28 @@ export default function CartPage() {
 
             <div className="flex justify-between mb-4">
               <span className="text-gray-700 font-medium">Subtotal:</span>
-              <span className="text-gray-900 font-bold text-lg">
-                ₹{total}
-              </span>
+              <span className="text-gray-900 font-bold text-lg">₹{total}</span>
             </div>
 
-            <button
-              onClick={() => navigate("/place-order")}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 font-semibold rounded mb-3 transition"
-            >
-              Buy Now
-            </button>
+           <button
+  onClick={() => {
+    if (!user) {
+      // Save CURRENT page (cart) + target page (place-order)
+      navigate("/login", {
+        state: {
+          from: location.pathname,   // where user came from (/cart)
+          redirectTo: "/place-order" // where user should finally go
+        }
+      });
+    } else {
+      navigate("/place-order");
+    }
+  }}
+  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 font-semibold rounded mb-3 transition"
+>
+  Buy Now
+</button>
+
 
             <button
               onClick={clearCart}

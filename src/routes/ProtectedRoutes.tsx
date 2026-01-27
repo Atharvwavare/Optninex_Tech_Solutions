@@ -21,12 +21,16 @@ export default function ProtectedRoute({ children }: Props) {
   // ❌ If NOT logged in → redirect to login
   // and SAVE the page user was trying to open
   if (!user) {
+    // Redirect to REGISTER instead of login
     return (
       <Navigate
-        to="/login"
-        state={{ from: location.pathname }}
-        replace
-      />
+      to="/login"
+      state={{
+        from: location.pathname,        // where user came from (ex: /cart)
+        redirectTo: location.pathname,  // where user MUST go after login (ex: /place-order)
+      }}
+      replace
+    />
     );
   }
 
