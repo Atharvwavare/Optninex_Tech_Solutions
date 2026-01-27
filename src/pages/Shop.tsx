@@ -21,7 +21,7 @@ export default function Shop() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  /* -------------------- Filter Logic -------------------- */
+  /* -------------------- Filter Logic for shop -------------------- */
   const filteredProducts = useMemo(() => {
     if (!debouncedQuery) return products;
 
@@ -30,12 +30,17 @@ export default function Shop() {
     );
   }, [debouncedQuery]);
 
-  /* -------------------- UI -------------------- */
+
+
+
+  /* shop page */
   return (
     <section className="min-h-screen bg-gradient-to-b from-white to-blue-50 py-20">
       <div className="container mx-auto px-6">
 
-        {/* -------------------- Heading -------------------- */}
+
+        {/* Shop page 1 */}
+        {/* Optenix World */}
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -40 }}
@@ -49,13 +54,14 @@ export default function Shop() {
               World
             </span>
           </h1>
-          <p className="text-gray-700 text-xl max-w-2xl mx-auto">
+          <p className="text-black text-xl max-w-2xl mx-auto">
             Explore our smart hardware and digital solutions designed for
             education and enterprises.
           </p>
         </motion.div>
 
-        {/* -------------------- Search -------------------- */}
+
+        {/* Search placeholder */}
         <div className="max-w-xl mx-auto mb-16 relative">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -70,7 +76,7 @@ export default function Shop() {
           />
         </div>
 
-        {/* -------------------- Results -------------------- */}
+        {/* Filtered Results  */}
         {filteredProducts.length === 0 ? (
           <p className="text-center text-lg text-gray-500">
             No products match your search.
@@ -107,7 +113,7 @@ export default function Shop() {
                 </div>
 
                 {/* Name */}
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-md font-semibold text-gray-900 mb-2">
                   {product.name}
                 </h3>
 
@@ -118,7 +124,7 @@ export default function Shop() {
                       key={i}
                       className={`w-4 h-4 ${
                         i < Math.round(product.rating)
-                          ? "fill-blue-400 text-blue-400"
+                          ? "fill-blue-400 text-blue-500"
                           : "text-gray-300"
                       }`}
                     />

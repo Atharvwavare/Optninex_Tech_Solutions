@@ -15,18 +15,23 @@ export default function PlaceOrder() {
     name: "",
     email: "",
     mobile: "",
-    gst: "",
     billingAddress: "",
     shippingAddress: "",
   });
 
-  const [sameAsBilling, setSameAsBilling] = useState(true);
+  const [sameAsBilling, setSameAsBilling] = useState(false);
 
   // -------------------- OTP STATE --------------------
   const [otpSent, setOtpSent] = useState(false);
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [enteredOtp, setEnteredOtp] = useState("");
   const [otpVerified, setOtpVerified] = useState(false);
+
+  // -------------------- ERROR STATE --------------------
+  const [errors, setErrors] = useState({
+    billingAddress: "",
+    shippingAddress: "",
+  });
 
   // -------------------- AUTH CHECK --------------------
   useEffect(() => {
@@ -37,7 +42,6 @@ export default function PlaceOrder() {
         name: user.name || "",
         email: user.email || "",
         mobile: user.mobile || "",
-        gst: "",
         billingAddress: user.address || "",
         shippingAddress: user.address || "",
       });
@@ -53,62 +57,69 @@ export default function PlaceOrder() {
 
   // -------------------- OTP LOGIC --------------------
   const sendOtp = () => {
-    if (!form.mobile || form.mobile.length < 10) {
-      alert("Enter valid mobile number");
-      return;
-    }
+    if (!form.mobile || form.mobile.length < 10) return;
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("🔐 DEMO OTP:", otp); // shown in console for testing
-
     setGeneratedOtp(otp);
     setOtpSent(true);
     setOtpVerified(false);
 
-    alert("OTP sent to your mobile (check console for demo)");
+    alert("OTP sent (Demo OTP in console)");
+    console.log("DEMO OTP:", otp);
   };
 
   const verifyOtp = () => {
     if (enteredOtp === generatedOtp) {
       setOtpVerified(true);
-      alert("✅ Mobile number verified");
-    } else {
-      alert("❌ Invalid OTP");
     }
   };
 
   // -------------------- CURRENT LOCATION --------------------
   const useCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation not supported");
-      return;
-    }
+    if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude, longitude } = pos.coords;
 
-        // Simple location text (no API needed)
-        const locationText = `Lat: ${latitude.toFixed(
-          4
-        )}, Lng: ${longitude.toFixed(4)}`;
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+      );
 
-        setForm((prev) => ({
-          ...prev,
-          billingAddress: locationText,
-          shippingAddress: sameAsBilling ? locationText : prev.shippingAddress,
-        }));
-      },
-      () => alert("Unable to get location")
-    );
+      const data = await res.json();
+      const fullAddress = data.display_name;
+
+      setForm((prev) => ({
+        ...prev,
+        billingAddress: fullAddress,
+        shippingAddress: sameAsBilling ? fullAddress : prev.shippingAddress,
+      }));
+
+      setErrors({ billingAddress: "", shippingAddress: "" });
+    });
   };
 
   // -------------------- CONTINUE --------------------
   const handleContinue = () => {
-    if (!otpVerified) {
-      alert("Please verify your mobile number first");
-      return;
+    let hasError = false;
+    const newErrors = { billingAddress: "", shippingAddress: "" };
+
+    // Billing required
+    if (!form.billingAddress || form.billingAddress.trim().length < 10) {
+      newErrors.billingAddress = "Please enter billing address";
+      hasError = true;
     }
+
+    // Shipping required if not same
+    if (
+      !sameAsBilling &&
+      (!form.shippingAddress || form.shippingAddress.trim().length < 10)
+    ) {
+      newErrors.shippingAddress = "Please enter shipping address";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+    if (hasError || !otpVerified) return;
 
     const finalData = {
       ...form,
@@ -120,21 +131,18 @@ export default function PlaceOrder() {
     updateUser({ ...user, ...finalData });
 
     navigate("/confirm-order", {
-      state: {
-        customer: finalData,
-        cartItems,
-      },
+      state: { customer: finalData, cartItems },
     });
   };
 
   // -------------------- UI --------------------
   return (
-    <div className="min-h-screen bg-gray-100 py-20 px-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="min-h-screen bg-gray-100 py-10 px-3">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 ">
 
-        {/* LEFT - CUSTOMER INFO */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-2xl font-bold mb-6">Customer Details</h2>
+        {/* LEFT */}
+        <div className="bg-white p-5 rounded-xl shadow">
+          <h2 className="text-xl font-bold mb-4">Customer Details</h2>
 
           <input
             name="name"
@@ -153,67 +161,71 @@ export default function PlaceOrder() {
           />
 
           {/* MOBILE + OTP */}
-          <div className="flex gap-2 mb-3">
-            <input
-              name="mobile"
-              value={form.mobile}
-              onChange={handleChange}
-              placeholder="Mobile Number"
-              className="flex-1 border px-3 py-2 rounded"
-            />
-            <button
-              onClick={sendOtp}
-              className="bg-blue-600 text-white px-4 rounded"
-            >
-              Send OTP
-            </button>
-          </div>
+         {/* MOBILE + OTP */}
+<div className="flex flex-col sm:flex-row gap-2 mb-3">
+  <input
+    name="mobile"
+    value={form.mobile}
+    onChange={handleChange}
+    placeholder="Mobile Number"
+    className="flex-1 border px-3 py-2 rounded"
+  />
+  <button
+    onClick={sendOtp}
+    className="bg-blue-600 text-white px-4 py-2 rounded w-full sm:w-auto"
+  >
+    Send OTP
+  </button>
+</div>
+
 
           {otpSent && !otpVerified && (
-            <div className="flex gap-2 mb-3">
-              <input
-                value={enteredOtp}
-                onChange={(e) => setEnteredOtp(e.target.value)}
-                placeholder="Enter OTP"
-                className="flex-1 border px-3 py-2 rounded"
-              />
-              <button
-                onClick={verifyOtp}
-                className="bg-green-600 text-white px-4 rounded"
-              >
-                Verify
-              </button>
-            </div>
-          )}
+  <div className="flex flex-col sm:flex-row gap-2 mb-3">
+    <input
+      value={enteredOtp}
+      onChange={(e) => setEnteredOtp(e.target.value)}
+      placeholder="Enter OTP"
+      className="flex-1 border px-3 py-2 rounded"
+    />
+    <button
+      onClick={verifyOtp}
+      className="bg-green-600 text-white px-4 py-2 rounded w-full sm:w-auto"
+    >
+      Verify
+    </button>
+  </div>
+)}
+
 
           {otpVerified && (
-            <p className="text-green-600 mb-3">✅ Mobile Verified</p>
+            <p className="text-green-600 mb-3">Mobile Verified</p>
           )}
-
-          {/* GST (OPTIONAL) */}
-          <input
-            name="gst"
-            value={form.gst}
-            onChange={handleChange}
-            placeholder="GST Number (Optional)"
-            className="w-full mb-3 border px-3 py-2 rounded"
-          />
 
           {/* BILLING ADDRESS */}
           <textarea
-            name="billingAddress"
             value={form.billingAddress}
-            onChange={handleChange}
-            placeholder="Billing Address"
+            onChange={(e) => {
+              setForm({ ...form, billingAddress: e.target.value });
+              setErrors({ ...errors, billingAddress: "" });
+            }}
+            placeholder="Billing Address *"
             rows={3}
-            className="w-full mb-2 border px-3 py-2 rounded"
+            className={`w-full mb-1 border px-3 py-2 rounded ${
+              errors.billingAddress ? "border-red-500" : ""
+            }`}
           />
+
+          {errors.billingAddress && (
+            <p className="text-red-600 text-sm mb-2">
+              {errors.billingAddress}
+            </p>
+          )}
 
           <button
             onClick={useCurrentLocation}
             className="mb-4 text-blue-600 underline"
           >
-            📍 Use Current Location
+            Use Current Location
           </button>
 
           {/* SAME AS BILLING */}
@@ -228,6 +240,7 @@ export default function PlaceOrder() {
                     ...prev,
                     shippingAddress: prev.billingAddress,
                   }));
+                  setErrors({ ...errors, shippingAddress: "" });
                 }
               }}
             />
@@ -236,18 +249,30 @@ export default function PlaceOrder() {
 
           {/* SHIPPING ADDRESS */}
           {!sameAsBilling && (
-            <textarea
-              name="shippingAddress"
-              value={form.shippingAddress}
-              onChange={handleChange}
-              placeholder="Shipping Address"
-              rows={3}
-              className="w-full mb-3 border px-3 py-2 rounded"
-            />
+            <>
+              <textarea
+                value={form.shippingAddress}
+                onChange={(e) => {
+                  setForm({ ...form, shippingAddress: e.target.value });
+                  setErrors({ ...errors, shippingAddress: "" });
+                }}
+                placeholder="Shipping Address *"
+                rows={3}
+                className={`w-full mb-1 border px-3 py-2 rounded ${
+                  errors.shippingAddress ? "border-red-500" : ""
+                }`}
+              />
+
+              {errors.shippingAddress && (
+                <p className="text-red-600 text-sm mb-2">
+                  {errors.shippingAddress}
+                </p>
+              )}
+            </>
           )}
 
-          {/* CONTINUE BUTTON */}
-          <button
+          {/* CONTINUE */}
+          <button type="submit"
             onClick={handleContinue}
             disabled={!otpVerified}
             className={`mt-4 w-full py-3 rounded font-semibold text-white
@@ -260,31 +285,30 @@ export default function PlaceOrder() {
             Continue to Confirm Order
           </button>
 
-          <button
-            onClick={() => navigate("/cart")}
-            className="mt-3 w-full border py-2 rounded"
-          >
-            ← Back to Cart
-          </button>
+           <button
+              onClick={() => navigate("/cart")}
+              className="w-full mt-4 text-blue-600 hover:underline"
+            >
+              ← Continue Shopping
+            </button>
         </div>
 
-        {/* RIGHT - ORDER PREVIEW */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-2xl font-bold mb-4">Your Products</h2>
+        {/* RIGHT */}
+        <div className="bg-white p-5 rounded-xl shadow">
+          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
           {cartItems.map((item) => (
             <div key={item.id} className="flex gap-4 border-b py-3">
-              <img src={item.image} className="w-20 h-20 object-contain" />
+              <img src={item.image} className="w-16 h-16 object-contain" />
               <div>
                 <p className="font-semibold">{item.name}</p>
                 <p>Qty: {item.quantity}</p>
-                <p className="font-bold">
-                  ₹{item.price * item.quantity}
-                </p>
+                <p className="font-bold">₹{item.price * item.quantity}</p>
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </div>
   );

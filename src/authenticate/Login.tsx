@@ -1,11 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();   // 🔥 NEW
+  const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -14,6 +15,9 @@ export default function Login() {
 
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  // 🔥 Where to go after login
+  const from = (location.state as any)?.from || "/home";
 
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,33 +65,31 @@ export default function Login() {
     validatePassword(value);
   };
 
-  const { login } = useAuth();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
 
-  const isEmailValid = validateEmail(email);
-  const isPasswordValid = validatePassword(password);
+    if (!isEmailValid || !isPasswordValid) return;
 
-  if (!isEmailValid || !isPasswordValid) return;
+    // 🔥 TEST LOGIN DATA (FRONTEND ONLY)
+    const fakeUser = {
+      name: "User",
+      email: email,
+      role: "user" as "user",
+    };
 
-  // 🔥 TEST LOGIN DATA (FRONTEND ONLY)
-const fakeUser = {
-  name: "User",
-  email: email,
-  role: "user" as "user",   // 👈 FIX
-};
+    const fakeToken = "test-token-123";
 
+    // ✅ SAVE TO CONTEXT
+    login(fakeUser, fakeToken);
 
-  const fakeToken = "test-token-123";
+    alert("Login successful!");
 
-  // ✅ SAVE TO CONTEXT
-  login(fakeUser, fakeToken);
-
-  alert("Login successful!");
-  navigate("/home");   // 🔥 GO TO HOME PAGE
-};
-
+    // 🔥 GO BACK TO ORIGINAL PAGE OR HOME
+    navigate(from, { replace: true });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2b0057] to-[#2f1fff] px-4">
@@ -147,7 +149,7 @@ const fakeUser = {
             )}
           </div>
 
-          {/* Button UNCHANGED */}
+          {/* Button */}
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg"

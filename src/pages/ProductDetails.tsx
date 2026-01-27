@@ -18,6 +18,11 @@ export default function ProductDetails() {
   // -------------------- Search --------------------
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  
+
+  const [showAllSpecs, setShowAllSpecs] = useState(false);
+
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,6 +31,7 @@ export default function ProductDetails() {
     return () => clearTimeout(timer);
   }, [query]);
 
+  // filtered results
   const filteredProducts = useMemo(() => {
     if (!debouncedQuery) return [];
     return products.filter((product) =>
@@ -48,12 +54,25 @@ export default function ProductDetails() {
   const images = product.images || [product.image];
   const [activeImage, setActiveImage] = useState(images[0]);
 
+  const visibleSpecs = showAllSpecs
+  ? product.specifications
+  : product.specifications.slice(0, 6);
+
+
   // 🔥 Reset image when product changes (IMPORTANT for suggestions click)
   useEffect(() => {
     const imgs = product.images || [product.image];
     setActiveImage(imgs[0]);
     setQty(1); // reset quantity also
   }, [product]);
+
+
+  useEffect(() => {
+  // when product id changes, clear search results
+  setQuery("");
+  setDebouncedQuery("");
+}, [id]);
+
 
   // -------------------- GST Calculation --------------------
   const basePrice = product.price * qty;
@@ -95,7 +114,11 @@ export default function ProductDetails() {
   };
 
   // -------------------- Suggested Products --------------------
-  const suggestions = products.filter((p) => p.id !== id).slice(0, 4);
+  const suggestions = products
+  .filter((p) => p.id !== id)
+  .sort(() => 0.5 - Math.random())
+  .slice(0, 6);
+
 
   return (
     <section className="min-h-screen bg-white py-20">
@@ -117,17 +140,22 @@ export default function ProductDetails() {
         {/* -------------------- Search Results -------------------- */}
         {debouncedQuery && filteredProducts.length > 0 && (
           <div className="mb-10 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {filteredProducts.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => navigate(`/shop/${p.id}`)}
-                className="border rounded-xl p-3 cursor-pointer hover:shadow-lg transition"
-              >
-                <img src={p.image} alt={p.name} className="h-28 mx-auto" />
-                <h3 className="text-sm font-semibold">{p.name}</h3>
-                <div className="text-blue-900 font-bold">₹{p.price}</div>
-              </div>
-            ))}
+           {filteredProducts.map((p) => (
+  <div
+    key={p.id}
+    onClick={() => {
+      setQuery("");
+      setDebouncedQuery("");
+      navigate(`/shop/${p.id}`);
+    }}
+    className="border rounded-xl p-3 cursor-pointer hover:shadow-lg transition"
+  >
+    <img src={p.image} alt={p.name} className="h-28 mx-auto" />
+    <h3 className="text-sm font-semibold">{p.name}</h3>
+    <div className="text-blue-900 font-bold">₹{p.price}</div>
+  </div>
+))}
+
           </div>
         )}
 
@@ -197,10 +225,53 @@ export default function ProductDetails() {
               </p>
             </div>
 
-            <p className="text-gray-700 mb-6">{product.description}</p>
+          <div className="mt-6 space-y-8">
+
+  <div className="mt-6 space-y-8">
+
+  {/* Description Section */}
+  <div>
+    <h2 className="text-lg font-semibold text-gray-900 mb-2">
+      Description
+    </h2>
+    <p className="text-black leading-relaxed text-md">
+      {product.description}
+    </p>
+  </div>
+
+  {/* Specifications Section */}
+  <div>
+    <h2 className="text-lg font-semibold text-gray-900 mb-2">
+      Specifications
+    </h2>
+
+    <ul className="text-gray-900 list-disc pl-5 space-y-1">
+      {visibleSpecs.map((spec, index) => (
+        <li key={index}>{spec}</li>
+      ))}
+    </ul>
+
+    {/* Show More / Show Less Button */}
+    {product.specifications.length > 6 && (
+      <button
+        onClick={() => setShowAllSpecs(!showAllSpecs)}
+        className="mt-2 text-blue-600 hover:text-blue-800 font-small"
+      >
+        {showAllSpecs ? " ← Show Less " : "Show More →"}
+      </button>
+    )}
+  </div>
+
+</div>
+
+
+</div>
+
+
+
 
             {/* -------- Quantity -------- */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-6 mt-4">
               <span className="font-medium">Quantity:</span>
               <div className="flex items-center border rounded-lg overflow-hidden">
                 <button
@@ -223,13 +294,13 @@ export default function ProductDetails() {
             <div className="flex gap-4 mb-6">
               <button
                 onClick={handleAddToCart}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-semibold rounded flex-1"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 font-semibold rounded flex-1"
               >
                 Add to Cart
               </button>
               <button
                 onClick={handleBuyNow}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 font-semibold rounded flex-1"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 font-semibold rounded flex-1"
               >
                 Buy Now
               </button>

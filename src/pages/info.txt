@@ -1,0 +1,8 @@
+  // 🔐 Protect route (only redirect AFTER mount)
+  useEffect(() => {
+    if (!totalAmount || !customer || !cartItems) {
+      navigate("/shop");
+    }
+  }, [totalAmount, customer, cartItems, navigate]);
+
+  if (!totalAmount || !customer || !cartItems) return null;

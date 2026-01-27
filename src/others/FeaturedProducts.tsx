@@ -68,7 +68,7 @@ export default function FeaturedProducts() {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-t-2xl"
+                  className="w-full h-60 object-fit rounded-t-2xl"
                 />
 
                 {/* Card Content */}

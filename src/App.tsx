@@ -25,6 +25,11 @@ import Profile from './authenticate/Profile';
 import PlaceOrder from "./pages/PlaceOrder";
 import ConfirmPayment from "./pages/ConfirmPayment";
 
+import ProtectedRoute from './routes/ProtectedRoutes';
+import PaymentPage from './pages/PaymentPage';
+
+import { useLocation } from 'react-router-dom';
+
 
 
 
@@ -32,11 +37,22 @@ import ConfirmPayment from "./pages/ConfirmPayment";
 
 
 function App() {
+
+
+
+    const location = useLocation();
+    const hideFooter =
+    location.pathname === "/payment" ||
+    location.pathname === "/success";
+    const hideHeader = 
+    location.pathname ==="/payment"||
+    location.pathname === "/success";
+
   
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />   {/* 🔥 THIS FIXES SCROLL ISSUE */}
-      <Header />
+       {!hideHeader && <Header />}
 
       <main className="flex-grow">
        <Routes>
@@ -44,7 +60,7 @@ function App() {
 
   <Route path="/" element={<Home />} />
   <Route path="/about" element={<About />} />
-  <Route path="/shop" element={<Shop />} />
+  <Route path="/shop" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
   <Route path="/blogs" element={<Blogs />} />
  
 
@@ -52,16 +68,40 @@ function App() {
   <Route path='/services' element={<Services/>}/>
   <Route path="/contact" element={<Contact />} />
 
-  <Route path="/shop/:id" element={<ProductDetails />} />
+  <Route path="/shop/:id" element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
   
   {/* Add this route for the cart page */}
-  <Route path="/cart" element={<CartPage />} />
+  <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
 
   <Route path="/login" element={<Login />} />
   <Route path="/register" element={<Register />} />
 
-   <Route path="/place-order" element={<PlaceOrder />} />
-<Route path="/confirm-order" element={<ConfirmPayment />} />
+    {/* 🔐 Protected routes */}
+  <Route
+    path="/place-order"
+    element={
+      <ProtectedRoute>
+        <PlaceOrder />
+      </ProtectedRoute>
+    }
+  />
+ <Route
+    path="/confirm-order"
+    element={
+      <ProtectedRoute>
+        <ConfirmPayment />
+      </ProtectedRoute>
+    }
+  />
+
+  <Route
+    path="/payment"
+    element={
+      
+        <PaymentPage />
+      
+    }
+  />
   {/* AFTER LOGIN */}
           <Route path="/home" element={<Home />} />
          
@@ -76,7 +116,7 @@ function App() {
 
       </main>
 
-      <Footer />
+       {!hideFooter && <Footer />}
     </div>
   );
 }
